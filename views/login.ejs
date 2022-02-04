@@ -1,0 +1,18 @@
+<%- include('header',{
+title:'Вход'
+}); -%>
+
+<div class="container">
+    <h1>Вход</h1>
+    <form action="" method="POST">
+        <label for="user_email">Логин:</label>
+        <input type="text" class="input" name="_email" id="user_email" placeholder="Введите свой логин">
+        <label for="user_pass">Пароль:</label>
+        <input type="password" class="input" name="_password" id="user_pass" placeholder="Введите свой пароль">
+        <% if(typeof error !== 'undefined'){ %>
+            <div class="err-msg"><%= error %></div><% } %>
+        <input type="submit" value="Войти">
+    </form>
+</div>
+
+<%- include('footer'); -%>

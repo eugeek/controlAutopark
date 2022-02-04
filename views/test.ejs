@@ -1,0 +1,75 @@
+<%- include('header',{
+title:'Чек-лист'
+}); -%>
+
+<div class="container">
+    <h1>Чек-лист водителя "<%= user.name %>"</h1>
+    <form action="" method="POST">
+        <% if(typeof warning !== 'undefined'){ %>
+            <div class="warning"><%= warning %></div><% } %>
+        <div class="car">
+            <p>Выберите машину:</p>
+            <select name="cars" id="car-select">
+                <option value="0">Renault Kangoo [А777АА | 178]</option>
+                <option value="1">Renault Kangoo [А407МР | 78]</option>
+                <option value="2">Mercedes S-class [B567BB | 178]</option>
+            </select>
+        </div>
+        <br>
+        <div class="test">
+            <input type="hidden" name="option[0]" value="0">
+            <input type="hidden" name="option[1]" value="0">
+            <input type="hidden" name="option[2]" value="0">
+            <input type="hidden" name="option[3]" value="0">
+            <input type="hidden" name="option[4]" value="0">
+            <input type="hidden" name="option[5]" value="0">
+            <input type="hidden" name="option[6]" value="0">
+            <input type="hidden" name="option[7]" value="0">
+            <input type="hidden" name="option[8]" value="0">
+            <input type="hidden" name="option[9]" value="0">
+            <input type="hidden" name="option[10]" value="0">
+            <input type="hidden" name="option[11]" value="0">
+            <input type="hidden" name="option[12]" value="0">
+            <input type="hidden" name="option[13]" value="0">
+            <input type="hidden" name="option[14]" value="0">
+            <input type="hidden" name="option[15]" value="0">
+            <input type="hidden" name="option[16]" value="0">
+            <input type="hidden" name="option[17]" value="0">
+            <input type="hidden" name="option[18]" value="0">
+            <input type="hidden" name="option[19]" value="0">
+            <input type="hidden" name="option[20]" value="0">
+            <input type="hidden" name="option[21]" value="0">
+            <input type="hidden" name="option[22]" value="0">
+            <p>Обязательно:</p>
+            <label><input type="checkbox" name="option[0]" value="1"> Противооткатные упоры</label><br>
+            <label><input type="checkbox" name="option[1]" value="1"> Аптечка</label><br>
+            <label><input type="checkbox" name="option[2]" value="1"> Огнетушитель</label><br>
+            <label><input type="checkbox" name="option[3]" value="1"> Знак аварийной остановки</label><br>
+            <label><input type="checkbox" name="option[4]" value="1"> Светоотражающий жилет</label><br>
+            <p>Документы:</p>
+            <label><input type="checkbox" name="option[5]" value="1"> ТТС (ПТС)</label><br>
+            <label><input type="checkbox" name="option[6]" value="1"> Страховка</label><br>
+            <label><input type="checkbox" name="option[7]" value="1"> Путевой лист</label><br>
+            <label><input type="checkbox" name="option[8]" value="1"> Топливная карта</label><br>
+            <label><input type="checkbox" name="option[9]" value="1"> Водительское удостоверение</label><br>
+            <label><input type="checkbox" name="option[10]" value="1"> Сан. Обработка</label><br>
+            <label><input type="checkbox" name="option[11]" value="1"> Сан. Книжка</label><br>
+            <p>Дополнительно:</p>
+            <label><input type="checkbox" name="option[12]" value="1"> Запасное колесо</label><br>
+            <label><input type="checkbox" name="option[13]" value="1"> Домкрат</label><br>
+            <label><input type="checkbox" name="option[14]" value="1"> Баллонный ключ</label><br>
+            <label><input type="checkbox" name="option[15]" value="1"> Буксировочный тросс</label><br>
+            <label><input type="checkbox" name="option[16]" value="1"> Провода "прикуривателя"</label><br>
+            <p>Техническое состояние:</p>
+            <label><input type="checkbox" name="option[17]" value="1"> Давление в шинах в норме</label><br>
+            <label><input type="checkbox" name="option[18]" value="1"> Фары в норме</label><br>
+            <label><input type="checkbox" name="option[19]" value="1"> Габариты в норме</label><br>
+            <label><input type="checkbox" name="option[20]" value="1"> Аварийка в норме</label><br>
+            <label><input type="checkbox" name="option[21]" value="1"> Уровень масла в норме</label><br>
+            <label><input type="checkbox" name="option[22]" value="1"> Уровень топлива в норме</label><br>
+        </div>
+        <input type="submit" value="Отправить">
+    </form>
+    <div class="link"><a href="/">В личный кабинет</a></div>
+</div>
+<%- include('footer'); -%>

@@ -1,0 +1,23 @@
+<%- include('header',{
+title:'Регистрация аккаунта'
+}); -%>
+
+<div class="container">
+    <h1>Регистрация</h1>
+    <form action="" method="POST">
+        <label for="user_name">Имя водителя:</label>
+        <input type="text" class="input" name="_name" id="user_name" placeholder="Введите имя">
+        <label for="user_email">Логин:</label>
+        <input type="text" class="input" name="_email" id="user_email" placeholder="Введите логин">
+        <label for="user_pass">Пароль:</label>
+        <input type="password" class="input" name="_password" id="user_pass" placeholder="Введите пароль">
+        <% if(typeof msg != 'undefined'){ %>
+            <div class="success-msg"><%= msg %></div><% }
+        if(typeof error !== 'undefined'){ %>
+            <div class="err-msg"><%= error %></div><% } %>
+        <input type="submit" value="Зарегистрировать">
+        <div class="link"><a href="/">Вернуться в личный кабинет</a></div>
+    </form>
+</div>
+
+<%- include('footer'); -%>
