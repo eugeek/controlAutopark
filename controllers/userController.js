@@ -33,38 +33,43 @@ exports.check = async (req, res, next) => {
     const errors = validationResult(req);
     req.body.option = req.body.option.map(item => (Array.isArray(item) && item[1]) || null);
 
-    let message = `<h2 style="color: #0d6efd">Чек-лист водителя: ${row[0].name}</h2>\n`;
-    message += `<h2 style="color: #0d6efd">Машина: ${config.config.cars[req.body.cars]}</h2>\n`;
-    let props = config.config.props;
-
-    let yes = '<span style="color: #20c997">Да</span>';
-    let no = '<span style="color: #dc3545">Нет</span>';
-
-    let propsNo = [];
-    for (let i = 0; i < props.length; i++) {
-        message += `<h3>${props[i]} [${req.body.option[i] !== null ? yes : no}]</h3>`;
-        if (req.body.option[i] === null && i < props.length - 6) propsNo.push(props[i]);
-    }
-    message += `<hr><h3>Ещё следует взять с собой: ${propsNo.join(', ')}</h3>`;
-
-    let hasAll = 'У меня все есть'
-    let hasNotAll = 'У меня не хватает'
-    let title = `[Водитель: ${row[0].name}] ${propsNo.length === 0 ? hasAll : hasNotAll}`;
-
-    let mailOptions = {
-        from: `"${config.config.email.emailName}"${config.config.email.emailFrom}`, // sender address
-        to: `${config.config.email.emailTo}`, // list of receivers
-        subject: title, // Subject line
-        text: '', // plaintext body
-        html: message // html body
-    };
-
-    // send mail with defined transport object
-    transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            return console.log(error);
+    try {
+        let message = `<h2 style="color: #0d6efd">Чек-лист водителя: ${row[0].name}</h2>\n`;
+        message += `<h2 style="color: #0d6efd">Машина: ${config.config.cars[req.body.cars]}</h2>\n`;
+        let props = config.config.props;
+        let yes = '<span style="color: #20c997">Да</span>';
+        let no = '<span style="color: #dc3545">Нет</span>';
+        let propsNo = [];
+        for (let i = 0; i < props.length; i++) {
+            message += `<h3>${props[i]} [${req.body.option[i] !== null ? yes : no}]</h3>`;
+            if (req.body.option[i] === null && i < props.length - 8) propsNo.push(props[i]);
         }
-    });
+        message += `<hr><h3>Ещё следует взять с собой: ${propsNo.join(', ')}</h3>`;
+        let hasAll = 'У меня все есть'
+        let hasNotAll = 'У меня не хватает'
+        let title = `[Водитель: ${row[0].name}] ${propsNo.length === 0 ? hasAll : hasNotAll}`;
+        let mailOptions = {
+            from: `"${config.config.email.emailName}"${config.config.email.emailFrom}`, // sender address
+            to: `${config.config.email.emailTo}`, // list of receivers
+            subject: title, // Subject line
+            text: '', // plaintext body
+            html: message // html body
+        };
+        // send mail with defined transport object
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                return console.log(error);
+            }
+        });
+
+        const [rows] = await dbConnection.execute("UPDATE `users` SET `last_date`= NOW() WHERE `id`=?", [req.session.userID]);
+    }
+    catch(e){
+        next(e);
+    }
+
+
+
 
     res.redirect('/');
 }
@@ -107,8 +112,8 @@ exports.register = async (req, res, next) => {
         const hashPass = await bcrypt.hash(body._password, 12);
 
         const [rows] = await dbConnection.execute(
-            "INSERT INTO `users`(`name`,`email`,`password`, `admin`) VALUES(?,?,?,?)",
-            [body._name, body._email, hashPass, 0]
+            "INSERT INTO `users`(`name`,`email`,`password`) VALUES(?,?,?)",
+            [body._name, body._email, hashPass]
         );
 
         if (rows.affectedRows !== 1) {
