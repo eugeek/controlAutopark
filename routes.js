@@ -8,7 +8,8 @@ const {
     login,
     loginPage,
     check,
-    checkPage
+    checkPage,
+    usersPage
 } = require("./controllers/userController");
 
 const ifNotLoggedin = (req, res, next) => {
@@ -46,6 +47,8 @@ router.post("/login",
     ],
     login
 );
+
+router.get('/users', ifNotLoggedin, usersPage);
 
 router.get("/signup", ifNotLoggedin, registerPage);
 router.post(

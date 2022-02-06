@@ -1,4 +1,4 @@
-const { validationResult } = require("express-validator");
+const { validationResult, check} = require("express-validator");
 const bcrypt = require('bcryptjs');
 const dbConnection = require("../utils/dbConnection");
 const { transporter } = require("../nodemailer");
@@ -15,6 +15,82 @@ exports.homePage = async (req, res, next) => {
     res.render('home', {
         user: row[0]
     });
+}
+
+exports.usersPage = async (req, res, next) => {
+    const [row] = await dbConnection.execute("SELECT * FROM `users` WHERE `id`=?", [req.session.userID]);
+
+    if(row[0].admin !== 1) {
+        return res.redirect('/');
+    }
+
+    const [rows] = await dbConnection.execute("SELECT * FROM `users`");
+
+    if(typeof req.query.id != 'undefined') {
+        try{
+            const [user] = await dbConnection.execute("SELECT * FROM `users` WHERE `id`=?", [req.query.id]);
+            let userLogin = user[0].email;
+            const [checklists] = await dbConnection.execute("SELECT * FROM `checklist`");
+
+            let result = [];
+            for(let checklist of checklists) {
+                if(checklist.email === userLogin) {
+                    result.push(checklist);
+                }
+            }
+            res.render('users', {
+                code: 1,
+                checklistsOfUser: result
+            });
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    else if(typeof req.query.checklist != 'undefined') {
+        try{
+            const [checklists] = await dbConnection.execute("SELECT * FROM `checklist`");
+
+            let result = {};
+            let props = [];
+            for(let checklist of checklists){
+                if(checklist.id == req.query.checklist) {
+                    for(let i = 0; i < config.config.props.length; i += 1) {
+                        let value = JSON.parse(checklist.checklist).option[i] !== null ? 'Да' : 'Нет';
+                        props.push({propName: config.config.props[i] + ':', propValue: value});
+                    }
+                    result.name = checklist.name;
+                    result.id = checklist.id;
+                    result.date = checklist.date;
+                    result.car = config.config.cars[Number(JSON.parse(checklist.checklist).cars)];
+                    result.props = props;
+                    result.email = checklist.email;
+                }
+            }
+            const [user] = await dbConnection.execute("SELECT * FROM `users` WHERE `email`=?", [result.email]);
+            result.idUser = user[0].id;
+
+            res.render('users', {
+                code: 2,
+                checklist: result
+            });
+        }
+        catch (e){
+            console.log(e);
+        }
+    }
+
+    else {
+        let allUsers = [];
+        for(let item of rows) {
+            allUsers.push({id: item.id, name: item.name});
+        }
+        res.render('users', {
+            code: 3,
+            users: allUsers
+        });
+    }
 }
 
 exports.checkPage = async  (req, res, next) => {
@@ -34,6 +110,7 @@ exports.check = async (req, res, next) => {
     req.body.option = req.body.option.map(item => (Array.isArray(item) && item[1]) || null);
 
     try {
+
         let message = `<h2 style="color: #0d6efd">Чек-лист водителя: ${row[0].name}</h2>\n`;
         message += `<h2 style="color: #0d6efd">Машина: ${config.config.cars[req.body.cars]}</h2>\n`;
         let props = config.config.props;
@@ -62,14 +139,19 @@ exports.check = async (req, res, next) => {
             }
         });
 
-        const [rows] = await dbConnection.execute("UPDATE `users` SET `last_date`= NOW() WHERE `id`=?", [req.session.userID]);
+        let name = row[0].name;
+        let login = row[0].email;
+        let checklist = JSON.stringify(req.body);
+        let now = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+        const [rows] = await dbConnection.execute(
+            "INSERT INTO `checklist`(`name`, `email`, `checklist`, `date`) VALUES(?,?,?,?)",
+            [name, login, checklist, now]
+        );
     }
     catch(e){
-        next(e);
+        console.log(e);
     }
-
-
-
 
     res.redirect('/');
 }

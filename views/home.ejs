@@ -4,11 +4,14 @@
         <div class="img">🚗</div>
         <h2><%= user.name %></h2>
         <span><%= user.email %></span>
-        <% if(user.admin === 1) { %>
-            <p><a id="registerAccount" href="/signup">Регистрация аккаунта</a></p>
-        <% } %>
         <a id="checklist" href="/check">Чек-лист</a>
         <a href="/logout">Выйти</a>
+    </div>
+    <div class="users">
+        <% if(user.admin === 1) { %>
+            <p><a id="user" href="/signup">Регистрация аккаунта</a></p>
+            <p><a id="user" href="/users">Все водители</a></p>
+        <% } %>
     </div>
 </div>
 <%- include('footer'); -%>

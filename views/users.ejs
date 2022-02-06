@@ -1,0 +1,39 @@
+<%- include('header',{
+title:'Водители'
+}); -%>
+<div class="container">
+    <div class="users">
+        <% if(code === 3) {%>
+            <h1>Водители</h1>
+            <% for(let user of users) { %>
+            <p><a id="accounts" href="/users?id=<%= user.id %>"><%= user.name %></a></p>
+            <% } %>
+            <p><a id="user" href="/">Назад</a></p>
+        <% } %>
+        <% if(code === 1) { %>
+            <h1>Чек-листы</h1>
+            <% for(let checklist of checklistsOfUser) { %>
+                <p><a id="accounts" href="/users?checklist=<%= checklist.id %>">
+                    <%=checklist.date.getDate()%>/<%=checklist.date.getMonth()%>/<%=checklist.date.getFullYear()%>
+                    <%= checklist.date.getHours()+3 %>:<%= checklist.date.getMinutes() %>
+                </a></p>
+            <% }%>
+            <p><a id="user" href="/users">Назад</a></p>
+        <% } %>
+        <% if(code === 2) { %>
+            <h3>Чек-лист #<%= checklist.id%></h3>
+            <h4>Водитель: <%= checklist.name%></h4>
+            <h4>Машина: <%= checklist.car%></h4>
+            <h4>Дата:
+                <%=checklist.date.getDate()%>/<%=checklist.date.getMonth()%>/<%=checklist.date.getFullYear()%>
+                <%= checklist.date.getHours()+3 %>:<%= checklist.date.getMinutes() %>
+            </h4>
+            <br>
+            <% for(let item of checklist.props) { %>
+            <p><%= item.propName %> <%= item.propValue %></p>
+            <% }%>
+            <p><a id="user" href="/users?id=<%= checklist.idUser %>">Назад</a></p>
+        <% } %>
+    </div>
+</div>
+<%- include('footer'); -%>
