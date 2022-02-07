@@ -212,3 +212,8 @@ label {
 .users p {
     font-size: 16px;
 }
+
+.users #pCheck {
+    font-size: 16px;
+    text-align: justify;
+}
